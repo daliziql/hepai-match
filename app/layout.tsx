@@ -7,14 +7,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = incoming.get("host") || "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const origin = `${protocol}://${host}`;
-  const title = "合盘｜相亲条件评估与匹配实验室";
+  const title = "合拍｜婚恋条件评估与匹配工具";
   const description = "用直观的稀缺度曲线看见自己的条件位置，并找到更现实的匹配区间。";
   return {
     title,
     description,
     icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: { title, description, type: "website", images: [{ url: `${origin}/og-v2.png`, width: 1728, height: 907, alt: "Hepan 条件评估实验室" }] },
-    twitter: { card: "summary_large_image", title, description, images: [`${origin}/og-v2.png`] },
+    openGraph: { title, description, type: "website", images: [{ url: `${origin}/og-v3.png`, width: 1731, height: 909, alt: "合拍 婚恋条件匹配工具" }] },
+    twitter: { card: "summary_large_image", title, description, images: [`${origin}/og-v3.png`] },
   };
 }
 
