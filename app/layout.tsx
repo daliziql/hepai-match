@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = host.includes("localhost") ? "http" : "https";
   const origin = `${protocol}://${host}`;
   const title = "合盘｜相亲条件评估与匹配实验室";
-  const description = "用透明、可配置的统计模型，看见自己的坐标，找到更现实的匹配区间。";
+  const description = "用直观的稀缺度曲线看见自己的条件位置，并找到更现实的匹配区间。";
   return {
     title,
     description,
