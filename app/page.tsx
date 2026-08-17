@@ -61,7 +61,13 @@ function metricScore(key:keyof Profile,p:Profile){const v=p[key];if(typeof v!=="
 function calculate(p:Profile,weights:WeightItem[]){const active=weights.filter(w=>w.enabled),total=active.reduce((s,w)=>s+w.weight,0)||1;const dimensions=active.map(w=>({...w,score:Math.round(metricScore(w.key,p))}));const score=Math.round(dimensions.reduce((s,w)=>s+w.score*w.weight,0)/total);const percentile=Math.round(clamp(50+(score-62)*2.15,3,98));return{score,percentile,dimensions}}
 function difficulty(own:number,target:number){const gap=target-own;if(gap<=-5)return{label:"容易",step:5,copy:"目标画像的综合门槛更宽松，条件层面较容易形成双向选择。"};if(gap<=1)return{label:"较易",step:4,copy:"双方综合条件接近，进入彼此选择范围的可能性相对较高。"};if(gap<=5)return{label:"适中",step:3,copy:"存在一定条件差，需要靠偏好契合与相处质量补足。"};if(gap<=9)return{label:"较难",step:2,copy:"目标相对稀缺，需要更强的个人特色或关系优势。"};return{label:"很难",step:1,copy:"目标画像非常稀缺，仅从条件层面看双向选择门槛较高。"}}
 
-function NumberField({label,value,onChange,unit,min=0,max=999}:{label:string;value:number;onChange:(v:number)=>void;unit?:string;min?:number;max?:number}){return <label className="field"><span>{label}</span><div><input type="number" value={value} min={min} max={max} onChange={e=>onChange(Number(e.target.value))}/>{unit&&<em>{unit}</em>}</div></label>}
+function NumberField({label,value,onChange,unit,min=0,max=999}:{label:string;value:number;onChange:(v:number)=>void;unit?:string;min?:number;max?:number}){
+  const[draft,setDraft]=useState(String(value));
+  useEffect(()=>setDraft(String(value)),[value]);
+  const change=(raw:string)=>{setDraft(raw);if(raw!==""){const parsed=Number(raw);if(Number.isFinite(parsed))onChange(parsed)}};
+  const finish=()=>{if(draft===""){setDraft(String(value));return}const parsed=Number(draft);const next=Math.min(max,Math.max(min,Number.isFinite(parsed)?parsed:value));setDraft(String(next));if(next!==value)onChange(next)};
+  return <label className="field"><span>{label}</span><div><input aria-label={label} type="number" inputMode="numeric" step="1" value={draft} min={min} max={max} onFocus={e=>e.currentTarget.select()} onChange={e=>change(e.target.value)} onBlur={finish}/>{unit&&<em>{unit}</em>}</div></label>
+}
 
 function SoftSlider({kind,value,onChange}:{kind:SoftKey;value:number;onChange:(v:number)=>void}){const meta=softMeta[kind];return <div className="soft-card"><div className="soft-title"><div><b>{meta.label}</b><span>{meta.short}</span></div><strong>{value}<small>/10</small></strong></div><input aria-label={`${meta.label}评分`} type="range" min="0" max="10" step="1" value={value} onChange={e=>onChange(Number(e.target.value))}/><div className="scale"><span>0</span><span>5</span><span>10</span></div><p key={value}><i>当前等级</i>{meta.descriptions[value]}</p></div>}
 
